@@ -2,10 +2,16 @@ import React from 'react'
 import { NextPage } from "next"
 import { useRouter } from 'next/router'
 
+type Request = {
+  repositories: boolean,
+  profile: boolean,
+}
+
 const Home: NextPage = () => {
 
   const [value, setValue] = React.useState('')
   const [error, setError] = React.useState<string>()
+  const [loadings, setLoadings] = React.useState<Request>({repositories: false, profile: false})
   const router = useRouter()
 
   const buildError = React.useCallback(() => {
@@ -14,12 +20,21 @@ const Home: NextPage = () => {
     }
   }, [error])
 
-  function submit(route: string): () => void {
+  const buildItem = React.useCallback((value: boolean, text: string) => {
+    if (value) {
+      return <h2>Loading...</h2>
+    }
+    return <h2>{text}</h2>
+  }, [loadings])
+
+  function submit(route: string, isPath: boolean = false): () => void {
     return () => {
       if (!value) {
         setError('The field is required')
       } else {
-        router.push(`${route}?name=${value}`)
+        setLoadings({ ...loadings, [route.substring(1)]: true });
+        const routeFinal = isPath ? `${route}/${value}` : `${route}?name=${value}` 
+        router.push(routeFinal)
       }
     }
   }
@@ -28,15 +43,15 @@ const Home: NextPage = () => {
     <main className="container">
       <h1>Github app</h1>
       <section style={{display: 'flex', width: '50vw', flexDirection: 'column'}}>
-        <input onFocus={_=>setError(null)} onChange={e=>setValue(e.target.value)} style={{width: '100%', padding: 12, border: error && 'red 1px solid'}} placeholder="Enter name" type="text" />
+        <input value={value} onFocus={_=>setError(null)} onChange={e=>setValue(e.target.value)} style={{width: '100%', padding: 12, border: error && 'red 1px solid'}} placeholder="Enter name" type="text" />
         {buildError()}
       </section>
       <section style={{display: 'flex', flexWrap: 'wrap', marginTop: 16}}>
         <div onClick={submit('/repositories')} className="card center">
-          <h2>Repositories</h2>
+          {buildItem(loadings.repositories, 'Repositories')}
         </div>
-        <div onClick={submit('/profile')} className="card center">
-          <h2>Profile</h2>
+        <div onClick={submit('/profile', true)} className="card center">
+          {buildItem(loadings.profile, 'Profile')}
         </div>
       </section>
     </main>
