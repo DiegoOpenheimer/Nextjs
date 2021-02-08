@@ -27,7 +27,7 @@ const Repositories: NextPage<PropsRepositorie> = ({ repositories, error }: Props
             <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
                 {!error && repositories?.map(repository => {
                     return <div className="card container" style={{margin: 4, justifyContent: 'center', width: 300, padding: 4}} key={repository.id}>
-                        <p>{repository.name}</p><a href={repository.html_url} style={{wordBreak: 'break-all', textAlign: 'center'}}>{repository.html_url}</a>
+                        <p>{repository.name}</p><a href={repository.html_url} target="__blank" style={{wordBreak: 'break-all', textAlign: 'center'}}>{repository.html_url}</a>
                     </div>
                 })}
             </div>

@@ -89,3 +89,9 @@ button:active::after {
   animation-duration: 1s;
   animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
+
+.profile-img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
